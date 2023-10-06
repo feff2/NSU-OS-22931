@@ -12,6 +12,8 @@ int main(int argc, char* argv[]) {
     //char options[] = "id";
 
     int c = 0;
+    struct rlimit new_limit;
+    char cwd[PATH_MAX];
     while((c = getopt(argc, argv, "ispuU:cC:dvV:")) != EOF)
     {
         //printf("%c", c);
@@ -49,12 +51,14 @@ int main(int argc, char* argv[]) {
                 break;
 
             case 'C':
-                struct rlimit new_limit = {atol(optarg), atol(optarg)};
-                setrlimit(RLIMIT_CORE, &new_limit);
+                if (getrlimit(RLIMIT_CORE, &new_limit) != 0)
+                    perror("failed to get core limit");
+                new_limit.rlim_cur = atol(optarg); 
+                if (setrlimit(RLIMIT_CORE, &new_limit) != 0)
+                    perror("failed to set core limit");
                 break;
 
             case 'd':
-                char cwd[PATH_MAX];
                 getcwd(cwd, sizeof(cwd));
                 printf("%s\n", cwd);
                 break;

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <sys/resource.h>
 
-char** env;
+extern char** environ;
 
 int main(int argc, char* argv[])
 {
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
             break;
         case 'v':
             printf("Environment variables are: \n");
-            for (p = env; *p != 0; p++)
+            for (p = environ; *p != 0; p++)
                 printf("%s\n", *p);
             break;
         case 'V':
@@ -70,4 +70,3 @@ int main(int argc, char* argv[])
     }
     return 0;
 }
-

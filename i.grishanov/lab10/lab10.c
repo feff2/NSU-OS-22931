@@ -34,5 +34,7 @@ int main(int argc, char* argv[]) {
     }
     
     waitpid(process_id, &status, 0);
+    if(WIFEXITED(status))
+        printf("exit code: %d\n", WEXITSTATUS(status));
     return 0;
 }

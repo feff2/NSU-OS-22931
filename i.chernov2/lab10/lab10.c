@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
-        fprintf(stderr, "Usage:<command> [arg1] [arg2] ...", argv[0]);
+        fprintf(stderr, "Bad input", argv[0]);
         exit(EXIT_FAILURE);
     }
 

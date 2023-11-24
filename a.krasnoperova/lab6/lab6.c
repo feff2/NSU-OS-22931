@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/mman.h>
 
 int main(int argc, char* argv[])
 {
@@ -21,37 +20,37 @@ int main(int argc, char* argv[])
         perror(strcat("Invailid file: ", argv[1]));
         exit(1);
     }
-    int i = 1, j = 1;
-    off_t size = lseek(fd, 0, SEEK_END);
-    p = mmap(0, size, PROT_READ, MAP_SHARED, fd, 0);
-    displ[1] = p;
-    for (int count = 0; count < size; count++)
-         if (*(p + count) == '\n')
-         {
-             line_ln[i++] = j;
-             displ[i] = count + p + 1;
-             j = 1;
-         }
-         else j++;
-     displ[i] = 0;
-
+    displ[1] = 0L;
+    int i = 1, j = 0;
+    while (read(fd, &c, 1))
+    {
+        j++;
+        if (c == '\n')
+        {
+            line_ln[i++] = j;
+            displ[i] = lseek(fd, 0L, 1);
+            j = 0;
+        }
+    }
     while (1)
     {
         printf("enter a line number in 5 sec\n");
         sleep(5);
         if ((i = read(fdcons, buf, 257)) == 0)
         {
+            lseek(fdcons, SEEK_SET, 0);
             while ((i = read(fd, buf, 257)) > 0)
                 write(1, buf, i);
             exit(0);
         }
         else
         {
-            buf[i] = '\0';
-            nom = atoi(buf);
-            if (nom <= 0) exit(0);
-            if (displ[nom]) write(1, displ[nom], line_ln[nom]);
-            else fprintf(stderr, "Incorrect line number\n");
+             buf[i] = '\0';
+             nom = atoi(buf);
+             if (nom <= 0) exit(0);
+             lseek(fd, displ[nom], 0);
+             if (read(fd, buf, line_ln[nom])) write(1, buf, line_ln[nom]);
+             else fprintf(stderr, "Incorrect line number\n");
         }
-        return 0;
-    }
+    return 0;
+}

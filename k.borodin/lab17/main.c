@@ -44,16 +44,8 @@ int text_editor(struct termios settings, int first_str){
             write(1, "\n", 1);
             ERASE;
             if (text_editor(settings, 0) == 1) return 1;
-            int k = 0;
-            while (pos > 0 && !isspace(line[pos - 1])) {
-                ERASE;
-                --pos;
-            }
-            for (int i = pos; i < 40; ++i) {
-                write(1, &line[i], 1);
-                ++k;
-            }
-            pos = k;
+            write(1, "\033[F", 4);
+            write(1, line, 40);
         }
         else {
             write(1, &line[pos], 1);

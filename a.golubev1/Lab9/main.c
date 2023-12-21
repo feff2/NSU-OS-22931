@@ -4,7 +4,7 @@
 #include <sys/wait.h>
 #include <stdbool.h>
 
-int main() {
+int main(void) {
   pid_t pid = fork();
 
   if (pid < 0) {
